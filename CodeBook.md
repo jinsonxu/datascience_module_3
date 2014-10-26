@@ -20,8 +20,7 @@ date: "Friday, October 17, 2014"
 9. Tidy dataset then had the feature names prepended with "AverageOf" to reflect the mean aggregation performed in the previous step.
 10. Tidy dataset was then output to a tab delimited file.
 
-tidySet$activityDescription <- as.factor(tidySet$activityDescription)
-?summary
+
 
 ###Data Dictionary
   Note: All feature variables (excluding subjectID and activityDescription) are the average of normalized recorded/derived values from the gyroscope or accelerometer for each subject doing different activities.
