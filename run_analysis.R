@@ -43,16 +43,19 @@ featureNames <- read.csv('./data/UCI HAR Dataset/features.txt', sep="",
                          na.strings=c(".", "NA", "", "?", "Not Available"), 
                          strip.white=TRUE, col.names=c('id', 'name')) # trim the whitespace in our values, save alot of trouble later
 
-# Lets start by sanitizing the feature names.
-featureNames$name <- sapply(featureNames$name, function(x) {
+
+# get a vector of the column indices that we want
+wantedFeaturesIndices <- grep("mean\\(\\)|std\\(\\)", featureNames$name, ignore.case=TRUE, perl=TRUE)
+wantedFeatures <- as.list(featureNames$name[wantedFeaturesIndices])
+
+
+# Lets sanitize the feature names.
+wantedFeatures <- sapply(wantedFeatures, function(x) {
   x <- gsub('-(\\w{1})','\\U\\1',x, perl=TRUE)
   gsub('\\W','_',x)  
 })
 
 
-# get a vector of the column indices that we want
-wantedFeaturesIndices <- grep('mean|std', featureNames$name,, ignore.case=TRUE, perl=TRUE)
-wantedFeatures <- featureNames$name[wantedFeaturesIndices]
 
 # Add in the additional columns
 newFeatureNames <- append(wantedFeatures, c('subjectID','activityID'))
@@ -89,28 +92,24 @@ names(trainingSet) <- newFeatureNames
 trainingSet <- merge(activityLabels, trainingSet, by.x='activityID', by.y='activityID')
 testSet <- merge(activityLabels, testSet, by.x='activityID', by.y='activityID')
 trainingSet <- trainingSet[,-1]  # remove activityID
-trainingSet <- trainingSet[,c(88, 2:87, 1)]  # reorder
+trainingSet <- trainingSet[,c(68, 2:67, 1)]  # reorder
 testSet <- testSet[,-1]  # activityID
-testSet <- testSet[,c(88, 2:87, 1)]  # reorder
+testSet <- testSet[,c(68, 2:67, 1)]  # reorder
 
-
-
+ 
 # Make the names descriptive
 workingFeatureNames <- names(trainingSet)
 workingFeatureNames <- gsub('Std','StandardDeviation', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 workingFeatureNames <- gsub('Freq','Frequency', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 workingFeatureNames <- gsub('Acc','Acceleration', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 workingFeatureNames <- gsub('Mag','Magnitude', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
+workingFeatureNames <- gsub('Gyro','Gyroscope', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 
 workingFeatureNames <- gsub('^(t){1}','time', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 workingFeatureNames <- gsub('^(f){1}','frequency', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 workingFeatureNames <- gsub('(__)(x|y|z)$','For\\2', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 workingFeatureNames <- gsub('_{1,}$','', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 
-workingFeatureNames <- gsub('Gyro','Gyroscope', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
-workingFeatureNames <- gsub('angle_','angleOf', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
-workingFeatureNames <- gsub('tBody','TimeBody', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
-workingFeatureNames <- gsub('_g','G', workingFeatureNames, ignore.case=TRUE, perl=TRUE)
 
 
 
